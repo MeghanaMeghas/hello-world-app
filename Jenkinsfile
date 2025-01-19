@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    GCP_PROJECT = '<YOUR_PROJECT_ID>'
+    GCP_PROJECT = 'phrasal-verve-447910-d9'
     IMAGE_NAME = 'hello-world-app'
     IMAGE_TAG = 'latest'
     GCR_PATH = "gcr.io/${GCP_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}"
@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage('Clone Repo') {
       steps {
-        git 'https://github.com/<YOUR_USERNAME>/hello-world-app.git'
+        git 'https://github.com/MeghanaMeghas/hello-world-app.git'
       }
     }
 
@@ -38,7 +38,7 @@ pipeline {
       steps {
         script {
           sh """
-            gcloud container clusters get-credentials <CLUSTER_NAME> --zone <ZONE> --project ${GCP_PROJECT}
+            gcloud container clusters get-credentials jenkins-cd --zone us-central1-a --project ${GCP_PROJECT}
             kubectl apply -f k8s/deployment.yaml
           """
         }
