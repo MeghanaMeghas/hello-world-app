@@ -17,11 +17,3 @@ spec:
           image: gcr.io/phrasal-verve-447910-d9/hello-world-app:latest
           ports:
             - containerPort: 8080
-          volumeMounts:
-            - name: docker-socket
-              mountPath: /var/run/docker.sock
-      volumes:
-        - name: docker-socket
-          hostPath:
-            path: /var/run/docker.sock
-            type: Socket
