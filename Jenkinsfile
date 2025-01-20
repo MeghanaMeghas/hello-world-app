@@ -71,5 +71,11 @@ spec:
         }
       }
     }
+    stage('List Workspace') {
+  steps {
+    sh 'ls -alh'
+  }
+}
+
   }
 }
