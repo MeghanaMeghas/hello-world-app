@@ -10,7 +10,15 @@ metadata:
   labels:
     app: jenkins
 spec:
-  containers:
+  contastages {
+        stage('Authenticate with GCP') {
+            steps {
+                withCredentials([file(credentialsId: 'gcp-json-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                    sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+                }
+            }
+        }
+  }iners:
   - name: docker
     image: docker:19.03.12-dind
     command:
@@ -34,17 +42,15 @@ spec:
     IMAGE_TAG = 'latest'
     GCR_PATH = "gcr.io/${GCP_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}"
   }
+ 
   stages {
-        stage('Authenticate with GCP') {
+    stage('Authenticate with GCP') {
             steps {
                 withCredentials([file(credentialsId: 'gcp-json-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
                     sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
                 }
             }
         }
-  }
-
-  stages {
     stage('Clone Repo') {
       steps {
         git 'https://github.com/MeghanaMeghas/hello-world-app.git'
