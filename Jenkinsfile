@@ -1,5 +1,32 @@
 pipeline {
-  agent any
+  agent {
+    kubernetes {
+      label 'docker-agent'
+      defaultContainer 'docker'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: jenkins
+spec:
+  containers:
+  - name: docker
+    image: docker:19.03.12-dind
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+    - name: docker-socket
+      mountPath: /var/run/docker.sock
+  volumes:
+  - name: docker-socket
+    hostPath:
+      path: /var/run/docker.sock
+      type: Socket
+"""
+    }
+  }
 
   environment {
     GCP_PROJECT = 'phrasal-verve-447910-d9'
