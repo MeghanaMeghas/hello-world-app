@@ -19,11 +19,16 @@ spec:
     volumeMounts:
     - name: docker-socket
       mountPath: /var/run/docker.sock
+    - name: gcloud-config
+      mountPath: /root/.config/gcloud
   volumes:
   - name: docker-socket
     hostPath:
       path: /var/run/docker.sock
       type: Socket
+  - name: gcloud-config
+    secret:
+      secretName: gcloud-service-account-key
 """
     }
   }
@@ -39,6 +44,20 @@ spec:
     stage('Clone Repo') {
       steps {
         git 'https://github.com/MeghanaMeghas/hello-world-app.git'
+      }
+    }
+
+    stage('Authenticate with GCP') {
+      steps {
+        script {
+          // Authenticate with the service account key
+          withCredentials([file(credentialsId: 'google-service-account-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+            sh """
+              gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+              gcloud config set project ${GCP_PROJECT}
+            """
+          }
+        }
       }
     }
 
