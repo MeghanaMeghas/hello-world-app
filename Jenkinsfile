@@ -36,14 +36,6 @@ spec:
   }
 
   stages {
-    stage('Authenticate with GCP') {
-      steps {
-        withCredentials([file(credentialsId: 'gcp-json-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-          sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-        }
-      }
-    }
-
     stage('Clone Repo') {
       steps {
         git 'https://github.com/MeghanaMeghas/hello-world-app.git'
