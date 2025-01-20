@@ -16,3 +16,16 @@ EXPOSE 8080
 
 # Run the app
 CMD ["node", "app.js"]
+
+
+# Start with the official Jenkins inbound agent image
+FROM jenkins/inbound-agent:latest
+
+# Install Docker inside the agent container
+USER root
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    apt-get clean
+
+# Set the default user back to jenkins
+USER jenkins
