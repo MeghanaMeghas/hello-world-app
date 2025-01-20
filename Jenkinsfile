@@ -45,7 +45,7 @@ spec:
     stage('Build Docker Image') {
       steps {
         script {
-          docker.build("${IMAGE_NAME}:${IMAGE_TAG}", "-f /home/jenkins/agent/workspace/hello-world-app/Dockerfile .") 
+          docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
 
         }
       }
