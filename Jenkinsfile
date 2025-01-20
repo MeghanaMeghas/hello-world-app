@@ -19,11 +19,15 @@ spec:
     volumeMounts:
     - name: docker-socket
       mountPath: /var/run/docker.sock
+    - name: workspace
+      mountPath: /home/jenkins/agent
   volumes:
   - name: docker-socket
     hostPath:
       path: /var/run/docker.sock
       type: Socket
+  - name: workspace
+    emptyDir: {}
 """
     }
   }
@@ -42,10 +46,20 @@ spec:
       }
     }
 
+    stage('List Workspace Files') {
+      steps {
+        sh 'echo "Current directory: $(pwd)"'
+        sh 'ls -alh $(pwd)'
+      }
+    }
+
     stage('Build Docker Image') {
       steps {
         script {
-          docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+          // Explicitly set Dockerfile path and context
+          sh """
+            DOCKER_BUILDKIT=0 docker build --no-cache --progress=plain -t ${IMAGE_NAME}:${IMAGE_TAG} -f /home/jenkins/agent/Dockerfile /home/jenkins/agent
+          """
         }
       }
     }
@@ -71,11 +85,5 @@ spec:
         }
       }
     }
-    stage('List Workspace') {
-  steps {
-    sh 'ls -alh'
-  }
-}
-
   }
 }
